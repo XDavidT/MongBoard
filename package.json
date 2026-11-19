@@ -1,10 +1,10 @@
 {
-  "name": "mongboard",
+  "name": "mongoboard",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A fast, native-feeling MongoDB client for macOS",
   "license": "MIT",
-  "repository": "github:XDavidT/MongBoard",
+  "repository": "github:XDavidT/MongoBoard",
   "type": "module",
   "scripts": {
     "dev": "vite",

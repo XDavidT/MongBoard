@@ -1,9 +1,9 @@
-# 🤝 Contributing to MongBoard
+# 🤝 Contributing to MongoBoard
 
 Thanks for helping! Bug reports, ideas, docs fixes and pull requests are all welcome.
 
 ## 🐛 Reporting bugs / 💡 suggesting features
-Use the [issue templates](https://github.com/XDavidT/MongBoard/issues/new/choose). For bugs, include your macOS version, MongBoard version, MongoDB version/hosting (Atlas, self-hosted…) and the exact error text. **Never paste passwords or full connection strings with credentials.**
+Use the [issue templates](https://github.com/XDavidT/MongoBoard/issues/new/choose). For bugs, include your macOS version, MongoBoard version, MongoDB version/hosting (Atlas, self-hosted…) and the exact error text. **Never paste passwords or full connection strings with credentials.**
 
 ## 🛠️ Development setup
 ```sh

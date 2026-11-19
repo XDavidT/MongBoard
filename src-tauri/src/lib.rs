@@ -14,7 +14,9 @@ pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
             let dir = app.path().app_config_dir()?;
-            app.manage(profiles::ProfileStore::load(dir.join("connections.json")));
+            let path = dir.join("connections.json");
+            profiles::migrate_legacy_file(&path);
+            app.manage(profiles::ProfileStore::load(path));
             app.manage(mongo::Sessions::default());
             app.set_menu(build_menu(app.handle())?)?;
             Ok(())
@@ -67,7 +69,7 @@ pub fn run() {
             commands::delete_document,
         ])
         .run(tauri::generate_context!())
-        .expect("error while running MongBoard");
+        .expect("error while running MongoBoard");
 }
 
 fn build_menu(app: &tauri::AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
@@ -92,7 +94,7 @@ fn build_menu(app: &tauri::AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
 
     let app_menu = Submenu::with_items(
         app,
-        "MongBoard",
+        "MongoBoard",
         true,
         &[
             &PredefinedMenuItem::about(app, None, None)?,

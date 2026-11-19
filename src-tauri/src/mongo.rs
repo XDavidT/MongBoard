@@ -69,7 +69,7 @@ impl Sessions {
 /// Build a driver client for a profile. `password` comes from the keychain or the editor form.
 pub async fn build_client(profile: &Profile, password: Option<String>) -> AppResult<Client> {
     let mut options = ClientOptions::parse(&profile.uri).await?;
-    options.app_name = Some("MongBoard".into());
+    options.app_name = Some("MongoBoard".into());
     options.server_selection_timeout = Some(Duration::from_secs(15));
     options.connect_timeout = Some(Duration::from_secs(10));
 
@@ -405,7 +405,7 @@ mod integration {
         let info = server_info(&client).await.unwrap();
         assert!(!info.version.is_empty());
 
-        let db = format!("mongboard_it_{}", Uuid::new_v4().simple());
+        let db = format!("mongoboard_it_{}", Uuid::new_v4().simple());
         let coll = "orders";
 
         let id = insert(&client, &db, coll, r#"{ orderNo: "A-1", status: "new", stops: [ { zip: "M5V" } ], eta: ISODate("2026-11-19T14:30:00Z"), n: NumberLong(5) }"#)

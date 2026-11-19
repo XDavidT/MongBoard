@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "MongBoard",
-  "version": "0.1.0",
-  "identifier": "io.mongboard.app",
+  "productName": "MongoBoard",
+  "version": "0.1.1",
+  "identifier": "io.mongoboard.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -14,7 +14,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "MongBoard",
+        "title": "MongoBoard",
         "url": "index.html?view=main",
         "width": 1360,
         "height": 860,

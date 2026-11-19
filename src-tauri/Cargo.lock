@@ -3071,8 +3071,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "mongboard"
-version = "0.1.0"
+name = "mongoboard"
+version = "0.1.1"
 dependencies = [
  "aws-config",
  "aws-credential-types",

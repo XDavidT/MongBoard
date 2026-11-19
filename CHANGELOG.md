@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-11-19
+
+### Changed
+- ✏️ Renamed the app from **MongBoard** to **MongoBoard** (repository: XDavidT/MongoBoard). Saved connections and Keychain passwords from 0.1.0 are moved over automatically on first launch.
+
 ## [0.1.0] - 2026-11-19
 
 ### Added
@@ -15,4 +20,5 @@ All notable changes to this project are documented here. The format follows [Kee
 - 🌗 Light and dark mode following macOS
 - 📦 Universal macOS build (Apple Silicon + Intel) published on GitHub Releases
 
-[0.1.0]: https://github.com/XDavidT/MongBoard/releases/tag/v0.1.0
+[0.1.1]: https://github.com/XDavidT/MongoBoard/releases/tag/v0.1.1
+[0.1.0]: https://github.com/XDavidT/MongoBoard/releases/tag/v0.1.0

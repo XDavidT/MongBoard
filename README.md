@@ -1,30 +1,30 @@
 <div align="center">
 
-<img src="docs/logo.png" alt="MongBoard logo" width="112" height="112">
+<img src="docs/logo.png" alt="MongoBoard logo" width="112" height="112">
 
-# MongBoard
+# MongoBoard
 
 **A fast, native-feeling MongoDB client for macOS.**
 Browse collections in a Studio 3T–style tree, edit documents safely, and connect with a password *or* your AWS IAM role.
 
-[![Latest release](https://img.shields.io/github/v/release/XDavidT/MongBoard?label=release&color=0f8a5a)](https://github.com/XDavidT/MongBoard/releases/latest)
-[![CI](https://github.com/XDavidT/MongBoard/actions/workflows/ci.yml/badge.svg)](https://github.com/XDavidT/MongBoard/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/XDavidT/MongoBoard?label=release&color=0f8a5a)](https://github.com/XDavidT/MongoBoard/releases/latest)
+[![CI](https://github.com/XDavidT/MongoBoard/actions/workflows/ci.yml/badge.svg)](https://github.com/XDavidT/MongoBoard/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-macOS%2012%2B-lightgrey?logo=apple)](https://github.com/XDavidT/MongBoard/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/XDavidT/MongBoard/total?color=0f8a5a)](https://github.com/XDavidT/MongBoard/releases)
+[![Platform](https://img.shields.io/badge/platform-macOS%2012%2B-lightgrey?logo=apple)](https://github.com/XDavidT/MongoBoard/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/XDavidT/MongoBoard/total?color=0f8a5a)](https://github.com/XDavidT/MongoBoard/releases)
 
 [![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB?logo=tauri&logoColor=white)](https://tauri.app)
 [![Rust](https://img.shields.io/badge/Rust-official%20MongoDB%20driver-000000?logo=rust)](https://github.com/mongodb/mongo-rust-driver)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 
-[**⬇️ Download for macOS**](https://github.com/XDavidT/MongBoard/releases/latest) · [✨ Features](#-features) · [📸 Screenshots](#-screenshots) · [🗺️ Roadmap](#%EF%B8%8F-roadmap) · [🤝 Contributing](CONTRIBUTING.md)
+[**⬇️ Download for macOS**](https://github.com/XDavidT/MongoBoard/releases/latest) · [✨ Features](#-features) · [📸 Screenshots](#-screenshots) · [🗺️ Roadmap](#%EF%B8%8F-roadmap) · [🤝 Contributing](CONTRIBUTING.md)
 
 <br>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/main-window-dark.png">
-  <img alt="MongBoard main window: open connections in the sidebar and a collection in the tree view" src="docs/screenshots/main-window-light.png" width="100%">
+  <img alt="MongoBoard main window: open connections in the sidebar and a collection in the tree view" src="docs/screenshots/main-window-light.png" width="100%">
 </picture>
 
 </div>
@@ -84,12 +84,12 @@ Browse collections in a Studio 3T–style tree, edit documents safely, and conne
 
 ## ⬇️ Install
 
-1. Download **`MongBoard_x.y.z_universal.dmg`** from the [**latest release**](https://github.com/XDavidT/MongBoard/releases/latest).
-2. Open the DMG and drag **MongBoard** into **Applications**.
+1. Download **`MongoBoard_x.y.z_universal.dmg`** from the [**latest release**](https://github.com/XDavidT/MongoBoard/releases/latest).
+2. Open the DMG and drag **MongoBoard** into **Applications**.
 3. First launch: the app isn't notarized yet, so **right-click → Open** once.
    If macOS says the app is "damaged", clear the download flag:
    ```sh
-   xattr -dr com.apple.quarantine /Applications/MongBoard.app
+   xattr -dr com.apple.quarantine /Applications/MongoBoard.app
    ```
 
 > [!NOTE]
@@ -107,8 +107,8 @@ Browse collections in a Studio 3T–style tree, edit documents safely, and conne
 <summary><b>☁️ Using AWS IAM with Atlas</b></summary>
 
 1. In Atlas, add a **database user** with authentication method **AWS IAM** and the ARN of your role or user.
-2. In MongBoard, choose **AWS IAM** and either leave *AWS profile* empty (uses the default credential chain: env vars, `~/.aws`, SSO, instance role) or type a profile name from `~/.aws/config`.
-3. Your connection string doesn't need a username or password. MongBoard sets `authMechanism=MONGODB-AWS` for you.
+2. In MongoBoard, choose **AWS IAM** and either leave *AWS profile* empty (uses the default credential chain: env vars, `~/.aws`, SSO, instance role) or type a profile name from `~/.aws/config`.
+3. Your connection string doesn't need a username or password. MongoBoard sets `authMechanism=MONGODB-AWS` for you.
 
 If you use SSO, run `aws sso login --profile <name>` first.
 </details>
@@ -129,15 +129,15 @@ If you use SSO, run `aws sso login --profile <name>` first.
 - [ ] 🚇 SSH tunnel and X.509 certificates
 - [ ] ✍️ Signed & notarized builds, auto-update
 
-Have an idea? [Open a feature request](https://github.com/XDavidT/MongBoard/issues/new?template=feature_request.yml) 💡
+Have an idea? [Open a feature request](https://github.com/XDavidT/MongoBoard/issues/new?template=feature_request.yml) 💡
 
 ## 🛠️ Build from source
 
 ```sh
-git clone https://github.com/XDavidT/MongBoard.git && cd MongBoard
+git clone https://github.com/XDavidT/MongoBoard.git && cd MongoBoard
 npm install
 npm run tauri dev      # run with hot reload
-npm run tauri build    # produce MongBoard.app + .dmg
+npm run tauri build    # produce MongoBoard.app + .dmg
 ```
 
 Needs **Node 22+**, **Rust stable** and the **Xcode Command Line Tools** (`xcode-select --install`).
@@ -169,17 +169,17 @@ CI runs both on every push against a `mongo:8` container, then builds the univer
 
 ## 🔒 Privacy & security
 
-- No telemetry, no analytics, no accounts. MongBoard only talks to the databases you connect to.
+- No telemetry, no analytics, no accounts. MongoBoard only talks to the databases you connect to.
 - Passwords are stored in the macOS Keychain; connection strings are saved **without** credentials.
 - Found a vulnerability? Please see [SECURITY.md](SECURITY.md).
 
 ## 🤝 Contributing
 
 Bug reports, ideas and pull requests are welcome! Read [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
-If MongBoard saves you time, a ⭐ helps others find it.
+If MongoBoard saves you time, a ⭐ helps others find it.
 
 ## 📄 License
 
 [MIT](LICENSE) © 2026 XDavidT
 
-<sub>MongoDB is a trademark of MongoDB, Inc. MongBoard is an independent project, not affiliated with or endorsed by MongoDB, Inc. or Studio 3T.</sub>
+<sub>MongoDB is a trademark of MongoDB, Inc. MongoBoard is an independent project, not affiliated with or endorsed by MongoDB, Inc. or Studio 3T.</sub>

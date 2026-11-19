@@ -71,6 +71,6 @@ jobs:
         run: npx tauri build --target universal-apple-darwin --bundles app,dmg
       - uses: actions/upload-artifact@v7
         with:
-          name: MongBoard-macOS
+          name: MongoBoard-macOS
           path: src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
           if-no-files-found: error

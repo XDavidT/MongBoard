@@ -355,7 +355,7 @@ function Quickstart() {
         <h1>
           Welcome to
           <br />
-          MongBoard
+          MongoBoard
         </h1>
         <h2>Recent connections</h2>
         <p className="muted">Pick up where you left off. You can keep several connections open at the same time.</p>

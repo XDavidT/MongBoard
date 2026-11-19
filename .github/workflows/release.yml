@@ -60,9 +60,9 @@ jobs:
           cat >> notes.md <<'NOTES'
 
           ### ⬇️ Install
-          1. Download **`MongBoard_*_universal.dmg`** below (Apple Silicon + Intel, macOS 12+).
-          2. Drag **MongBoard** to **Applications**.
-          3. First launch: right-click → **Open** (the app isn't notarized yet). If macOS says it's damaged, run `xattr -dr com.apple.quarantine /Applications/MongBoard.app`.
+          1. Download **`MongoBoard_*_universal.dmg`** below (Apple Silicon + Intel, macOS 12+).
+          2. Drag **MongoBoard** to **Applications**.
+          3. First launch: right-click → **Open** (the app isn't notarized yet). If macOS says it's damaged, run `xattr -dr com.apple.quarantine /Applications/MongoBoard.app`.
           NOTES
           sed -i '' 's/^          //' notes.md
           {
@@ -76,7 +76,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ steps.version.outputs.tag }}
-          releaseName: MongBoard ${{ steps.version.outputs.tag }}
+          releaseName: MongoBoard ${{ steps.version.outputs.tag }}
           releaseCommitish: ${{ github.sha }}
           releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: false

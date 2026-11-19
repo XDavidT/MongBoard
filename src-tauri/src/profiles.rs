@@ -135,6 +135,23 @@ impl ProfileStore {
     }
 }
 
+/// v0.1.0 shipped as "MongBoard" (bundle id `io.mongboard.app`). Copy its saved
+/// connections into the new config folder the first time MongoBoard starts.
+pub fn migrate_legacy_file(path: &std::path::Path) {
+    if path.exists() {
+        return;
+    }
+    let Some(new_dir) = path.parent() else { return };
+    let Some(parent) = new_dir.parent() else {
+        return;
+    };
+    let legacy = parent.join("io.mongboard.app").join("connections.json");
+    if legacy.exists() {
+        let _ = std::fs::create_dir_all(new_dir);
+        let _ = std::fs::copy(&legacy, path);
+    }
+}
+
 /// Credentials pulled out of a connection string.
 #[derive(Debug, PartialEq, Eq)]
 pub struct SplitUri {
@@ -240,8 +257,20 @@ mod tests {
     }
 
     #[test]
+    fn migrates_legacy_config() {
+        let root = std::env::temp_dir().join(format!("mongoboard-mig-{}", Uuid::new_v4()));
+        let legacy = root.join("io.mongboard.app");
+        std::fs::create_dir_all(&legacy).unwrap();
+        std::fs::write(legacy.join("connections.json"), "[]").unwrap();
+        let path = root.join("io.mongoboard.app").join("connections.json");
+        migrate_legacy_file(&path);
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), "[]");
+        let _ = std::fs::remove_dir_all(root);
+    }
+
+    #[test]
     fn store_round_trip() {
-        let dir = std::env::temp_dir().join(format!("mongboard-test-{}", Uuid::new_v4()));
+        let dir = std::env::temp_dir().join(format!("mongoboard-test-{}", Uuid::new_v4()));
         let path = dir.join("connections.json");
         let store = ProfileStore::load(path.clone());
         let p = Profile {

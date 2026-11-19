@@ -1,4 +1,4 @@
-# MongBoard — notes for AI agents
+# MongoBoard — notes for AI agents
 
 Desktop MongoDB client (Tauri 2 + React/TS + official `mongodb` Rust crate). The owner does not write code; agents make all changes. Keep things simple and tested.
 
