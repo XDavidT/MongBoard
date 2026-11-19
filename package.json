@@ -3,6 +3,18 @@
   "private": true,
   "version": "0.1.1",
   "description": "A fast, native-feeling MongoDB client for macOS",
+  "keywords": [
+    "mongodb",
+    "mongodb-gui",
+    "mongodb-client",
+    "macos",
+    "tauri",
+    "database-gui",
+    "studio-3t-alternative",
+    "robo-3t-alternative",
+    "nosqlbooster-alternative",
+    "aws-iam"
+  ],
   "license": "MIT",
   "repository": "github:XDavidT/MongoBoard",
   "type": "module",

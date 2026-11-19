@@ -5,6 +5,8 @@ description = "MongoBoard — a desktop MongoDB client"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/XDavidT/MongoBoard"
+keywords = ["mongodb", "gui", "studio3t-alternative", "robo3t-alternative", "nosqlbooster"]
+categories = ["database", "gui"]
 publish = false
 
 [lib]

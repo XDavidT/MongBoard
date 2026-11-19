@@ -7,6 +7,8 @@
 **A fast, native-feeling MongoDB client for macOS.**
 Browse collections in a Studio 3T–style tree, edit documents safely, and connect with a password *or* your AWS IAM role.
 
+🆓 A free, open-source **Studio 3T alternative**, **Robo 3T alternative** and **NoSQLBooster alternative**.
+
 [![Latest release](https://img.shields.io/github/v/release/XDavidT/MongoBoard?label=release&color=0f8a5a)](https://github.com/XDavidT/MongoBoard/releases/latest)
 [![CI](https://github.com/XDavidT/MongoBoard/actions/workflows/ci.yml/badge.svg)](https://github.com/XDavidT/MongoBoard/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -30,6 +32,20 @@ Browse collections in a Studio 3T–style tree, edit documents safely, and conne
 </div>
 
 ---
+
+## 🔄 Looking for a Studio 3T, Robo 3T or NoSQLBooster alternative?
+
+MongoBoard covers the everyday work those GUIs are used for: saved connections, a tree view of documents, filtering, and safe single-document edits. It's free, open source (MIT), and built for macOS.
+
+| | MongoBoard |
+|---|---|
+| 💸 Price | Free, MIT licensed |
+| 🌲 Studio 3T-style tree view (Key / Value / Type) | ✅ |
+| ☁️ AWS IAM (`MONGODB-AWS`) sign-in | ✅ |
+| 🔑 Passwords in the macOS Keychain | ✅ |
+| 🛡️ Read-only connections + Production write guard | ✅ |
+| 🍎 Native macOS app, Apple Silicon + Intel, light/dark | ✅ |
+| 🧱 Aggregation builder, indexes, import/export | 🚧 [On the roadmap](#%EF%B8%8F-roadmap) |
 
 ## ✨ Features
 
@@ -182,4 +198,4 @@ If MongoBoard saves you time, a ⭐ helps others find it.
 
 [MIT](LICENSE) © 2026 XDavidT
 
-<sub>MongoDB is a trademark of MongoDB, Inc. MongoBoard is an independent project, not affiliated with or endorsed by MongoDB, Inc. or Studio 3T.</sub>
+<sub>MongoDB is a trademark of MongoDB, Inc. Studio 3T and Robo 3T are products of 3T Software Labs; NoSQLBooster is a product of its respective owner. MongoBoard is an independent project, not affiliated with or endorsed by any of them.</sub>
