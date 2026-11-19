@@ -54,7 +54,8 @@ export function ConnectionManager() {
     setBusy(true);
     setError(null);
     try {
-      await api.openBrowser(id);
+      await api.openConnection(id);
+      await getCurrentWindow().close();
     } catch (e) {
       setError(errorText(e));
     } finally {

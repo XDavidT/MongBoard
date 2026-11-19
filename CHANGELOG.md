@@ -1,0 +1,18 @@
+# Changelog
+
+All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
+
+## [0.1.0] - 2026-11-19
+
+### Added
+- 🪟 Main window with an open-connections sidebar (connection → databases → collections), collection tabs and a Quickstart tab with recent connections
+- 🗂️ Connection Manager and connection editor as pop-up windows
+- 🔑 Username/password (SCRAM) auth with passwords in the macOS Keychain
+- ☁️ AWS IAM (`MONGODB-AWS`) auth via the default credential chain or a named AWS profile
+- 🏷️ Environment tags, read-only connections and a Production write confirmation
+- 🌲 Tree and JSON views, filter / projection / sort / limit and paging
+- ✏️ Add, edit, duplicate and delete single documents with a type-preserving shell-JSON editor
+- 🌗 Light and dark mode following macOS
+- 📦 Universal macOS build (Apple Silicon + Intel) published on GitHub Releases
+
+[0.1.0]: https://github.com/XDavidT/MongBoard/releases/tag/v0.1.0

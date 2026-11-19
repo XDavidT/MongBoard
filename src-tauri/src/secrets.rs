@@ -10,7 +10,9 @@ fn entry(id: Uuid) -> AppResult<keyring::Entry> {
 }
 
 pub fn set_password(id: Uuid, password: &str) -> AppResult<()> {
-    entry(id)?.set_password(password).map_err(|e| AppError::Keychain(e.to_string()))
+    entry(id)?
+        .set_password(password)
+        .map_err(|e| AppError::Keychain(e.to_string()))
 }
 
 pub fn get_password(id: Uuid) -> AppResult<Option<String>> {

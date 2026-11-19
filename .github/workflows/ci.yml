@@ -22,12 +22,13 @@ jobs:
           --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
           --health-interval 5s --health-timeout 5s --health-retries 20
     steps:
-      - uses: actions/checkout@v4
-      - name: System libraries for Tauri
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libsecret-1-dev
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - name: System libraries for Tauri (cached)
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libsecret-1-dev
+          version: 1
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -38,19 +39,25 @@ jobs:
       - run: npm ci
       - name: Typecheck + build frontend
         run: npm run build
+      - name: Rust formatting
+        working-directory: src-tauri
+        run: cargo fmt --check
       - name: Rust tests (incl. MongoDB integration)
         working-directory: src-tauri
         env:
           MONGODB_URI: mongodb://localhost:27017
         run: cargo test -- --include-ignored
 
+  # Full universal builds are slow (~20 min); run them for pull requests or on demand.
+  # Pushes to main are covered by the tests above, and tagged releases by release.yml.
   macos:
     name: macOS app (.dmg)
     runs-on: macos-15
     needs: test
+    if: github.event_name != 'push'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -63,7 +70,7 @@ jobs:
       - run: npm ci
       - name: Build universal app
         run: npx tauri build --target universal-apple-darwin --bundles app,dmg
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: MongBoard-macOS
           path: src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg

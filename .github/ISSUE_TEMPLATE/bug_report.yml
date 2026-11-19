@@ -1,0 +1,43 @@
+name: 🐛 Bug report
+description: Something isn't working as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for reporting! ⚠️ Please remove passwords and credentials from anything you paste."
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Include the exact error message if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. Open …\n2. Click …\n3. See error"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: MongBoard version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version and chip
+      placeholder: "macOS 15.1, Apple M3"
+  - type: dropdown
+    id: hosting
+    attributes:
+      label: Where is your MongoDB?
+      options: [MongoDB Atlas, Self-hosted replica set, Self-hosted standalone, Sharded cluster, Amazon DocumentDB, Other]
+  - type: dropdown
+    id: auth
+    attributes:
+      label: Authentication
+      options: [Username and password, AWS IAM, None]

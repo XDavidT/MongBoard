@@ -1,0 +1,34 @@
+# 🤝 Contributing to MongBoard
+
+Thanks for helping! Bug reports, ideas, docs fixes and pull requests are all welcome.
+
+## 🐛 Reporting bugs / 💡 suggesting features
+Use the [issue templates](https://github.com/XDavidT/MongBoard/issues/new/choose). For bugs, include your macOS version, MongBoard version, MongoDB version/hosting (Atlas, self-hosted…) and the exact error text. **Never paste passwords or full connection strings with credentials.**
+
+## 🛠️ Development setup
+```sh
+npm install
+npm run tauri dev
+```
+Requirements: Node 22+, Rust stable, Xcode Command Line Tools.
+
+## ✅ Before opening a PR
+```sh
+npm run build                     # TypeScript + Vite
+cd src-tauri && cargo test        # Rust unit tests
+MONGODB_URI=mongodb://localhost:27017 cargo test -- --include-ignored   # optional: CRUD against a local server
+cargo fmt --check
+```
+CI runs the same checks (with a real `mongo:8` container) on every pull request.
+
+## 🧭 Ground rules
+- All database access goes through `src-tauri/src/mongo.rs`; the UI sends shell-JSON text and Rust parses it (`shell_json.rs`).
+- Secrets only in the Keychain (`secrets.rs`), never in files or logs.
+- Writes must respect read-only connections (`commands::writable`).
+- Colours come from CSS variables in `src/styles.css` (light + dark); don't hard-code colours.
+- Keep PRs focused; add or update tests for behaviour changes.
+
+## 🚀 Releasing (maintainers)
+1. Bump the version in `package.json`, `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json`, and add a `CHANGELOG.md` entry.
+2. `git tag vX.Y.Z && git push origin vX.Y.Z`
+3. The **Release** workflow builds the universal `.dmg` and publishes it on the Releases page.

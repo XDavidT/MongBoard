@@ -1,5 +1,14 @@
 // Typed wrappers around the Rust commands in src-tauri/src/commands.rs.
-import { invoke } from "@tauri-apps/api/core";
+import { invoke as tauriInvoke } from "@tauri-apps/api/core";
+
+// VITE_DEMO=1 swaps the Rust backend for sample data (README screenshots).
+const invoke: typeof tauriInvoke =
+  import.meta.env.VITE_DEMO === "1"
+    ? (cmd, args) =>
+        cmd.startsWith("open_connection_")
+          ? tauriInvoke(cmd, args) // window management stays real in demo mode
+          : import("./demo").then((m) => m.demoInvoke(cmd, args as Record<string, unknown>))
+    : tauriInvoke;
 
 export type EnvTag = "production" | "qa" | "dev" | "local" | "none";
 export type AuthKind = "none" | "password" | "aws";
@@ -28,6 +37,11 @@ export interface ServerInfo {
   version: string;
   topology: string;
   latencyMs: number;
+}
+
+export interface OpenConnection {
+  profile: ProfileView;
+  server: ServerInfo;
 }
 
 export interface DatabaseInfo {
@@ -90,10 +104,10 @@ export const api = {
 
   openConnectionManager: () => invoke<void>("open_connection_manager"),
   openConnectionEditor: (id: string | null) => invoke<void>("open_connection_editor", { id }),
-  openBrowser: (id: string) => invoke<void>("open_browser", { id }),
-
-  connect: (id: string) => invoke<ServerInfo>("connect", { id }),
-  disconnect: (id: string) => invoke<void>("disconnect", { id }),
+  openConnection: (id: string) => invoke<ServerInfo>("open_connection", { id }),
+  listOpenConnections: () => invoke<OpenConnection[]>("list_open_connections"),
+  closeConnection: (id: string) => invoke<void>("close_connection", { id }),
+  reconnect: (id: string) => invoke<ServerInfo>("reconnect", { id }),
   listDatabases: (id: string) => invoke<DatabaseInfo[]>("list_databases", { id }),
   listCollections: (id: string, db: string) => invoke<CollectionInfo[]>("list_collections", { id, db }),
   find: (id: string, request: FindRequest) => invoke<FindResult>("find", { id, request }),

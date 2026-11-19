@@ -3,7 +3,8 @@
 Desktop MongoDB client (Tauri 2 + React/TS + official `mongodb` Rust crate). The owner does not write code; agents make all changes. Keep things simple and tested.
 
 ## Rules
-- Every window loads the same bundle; `?view=manager|editor|browser` in `src/main.tsx` picks the screen. Windows are created in Rust (`commands.rs::focus_or_build`).
+- One main window (`label: main`, `?view=main`): open connections in the sidebar, collections as tabs, Quickstart tab. The Connection Manager (`?view=manager`) and editor (`?view=editor`) are pop-up windows created in Rust (`commands.rs::focus_or_build`). Connecting goes through `open_connection`, which emits `connections-changed` so the main window refreshes.
+- `VITE_DEMO=1` swaps the backend for sample data (`src/demo/`) for screenshots; it is never part of release builds.
 - All database access goes through `src-tauri/src/mongo.rs`. The UI never builds BSON: it sends shell-JSON text, Rust parses it with `shell_json.rs`.
 - Passwords only in the keychain (`secrets.rs`). Never write secrets to `connections.json` or logs.
 - Writes must go through `commands::writable()` (read-only profiles). Production confirmation is in the UI (`DocPanel`).

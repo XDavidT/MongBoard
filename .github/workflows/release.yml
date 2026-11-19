@@ -1,0 +1,61 @@
+name: Release
+
+# Push a tag like v0.2.0 to build the universal macOS app and publish it on the Releases page.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & publish macOS release
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - name: Release notes from CHANGELOG
+        id: notes
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" {grab=1; next}
+            /^## \[/ && grab {exit}
+            /^\[[0-9]/ {next}
+            grab {print}
+          ' CHANGELOG.md > notes.md
+          cat >> notes.md <<'NOTES'
+
+          ### ⬇️ Install
+          1. Download **`MongBoard_*_universal.dmg`** below (Apple Silicon + Intel, macOS 12+).
+          2. Drag **MongBoard** to **Applications**.
+          3. First launch: right-click → **Open** (the app isn't notarized yet). If macOS says it's damaged, run `xattr -dr com.apple.quarantine /Applications/MongBoard.app`.
+          NOTES
+          sed -i '' 's/^          //' notes.md
+          {
+            echo "body<<EOF"
+            cat notes.md
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+      - uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: MongBoard ${{ github.ref_name }}
+          releaseBody: ${{ steps.notes.outputs.body }}
+          releaseDraft: false
+          prerelease: false
+          args: --target universal-apple-darwin --bundles app,dmg

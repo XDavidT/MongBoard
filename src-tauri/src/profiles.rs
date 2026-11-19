@@ -83,7 +83,10 @@ impl ProfileStore {
             .ok()
             .and_then(|s| serde_json::from_str::<Vec<Profile>>(&s).ok())
             .unwrap_or_default();
-        Self { path, profiles: Mutex::new(profiles) }
+        Self {
+            path,
+            profiles: Mutex::new(profiles),
+        }
     }
 
     pub fn list(&self) -> Vec<Profile> {
@@ -91,7 +94,12 @@ impl ProfileStore {
     }
 
     pub fn get(&self, id: Uuid) -> Option<Profile> {
-        self.profiles.lock().unwrap().iter().find(|p| p.id == id).cloned()
+        self.profiles
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|p| p.id == id)
+            .cloned()
     }
 
     pub fn upsert(&self, profile: Profile) -> std::io::Result<()> {
@@ -140,20 +148,33 @@ pub struct SplitUri {
 pub fn split_credentials(uri: &str) -> SplitUri {
     let trimmed = uri.trim();
     let Some(scheme_end) = trimmed.find("://") else {
-        return SplitUri { uri: trimmed.to_string(), username: None, password: None };
+        return SplitUri {
+            uri: trimmed.to_string(),
+            username: None,
+            password: None,
+        };
     };
     let rest = &trimmed[scheme_end + 3..];
     let authority_end = rest.find(['/', '?']).unwrap_or(rest.len());
     let authority = &rest[..authority_end];
     let Some(at) = authority.rfind('@') else {
-        return SplitUri { uri: trimmed.to_string(), username: None, password: None };
+        return SplitUri {
+            uri: trimmed.to_string(),
+            username: None,
+            password: None,
+        };
     };
     let userinfo = &authority[..at];
     let (user, pass) = match userinfo.split_once(':') {
         Some((u, p)) => (u, Some(p)),
         None => (userinfo, None),
     };
-    let clean = format!("{}{}{}", &trimmed[..scheme_end + 3], &authority[at + 1..], &rest[authority_end..]);
+    let clean = format!(
+        "{}{}{}",
+        &trimmed[..scheme_end + 3],
+        &authority[at + 1..],
+        &rest[authority_end..]
+    );
     SplitUri {
         uri: clean,
         username: Some(percent_decode(user)).filter(|s| !s.is_empty()),
@@ -167,7 +188,10 @@ pub fn percent_decode(s: &str) -> String {
     let mut i = 0;
     while i < bytes.len() {
         if bytes[i] == b'%' && i + 2 < bytes.len() {
-            if let Some(v) = std::str::from_utf8(&bytes[i + 1..i + 3]).ok().and_then(|h| u8::from_str_radix(h, 16).ok()) {
+            if let Some(v) = std::str::from_utf8(&bytes[i + 1..i + 3])
+                .ok()
+                .and_then(|h| u8::from_str_radix(h, 16).ok())
+            {
                 out.push(v);
                 i += 3;
                 continue;
@@ -185,8 +209,13 @@ mod tests {
 
     #[test]
     fn splits_credentials_from_srv_uri() {
-        let s = split_credentials("mongodb+srv://app%40ro:p%2Fss:w@cluster0.abc.mongodb.net/deliveries?retryWrites=true");
-        assert_eq!(s.uri, "mongodb+srv://cluster0.abc.mongodb.net/deliveries?retryWrites=true");
+        let s = split_credentials(
+            "mongodb+srv://app%40ro:p%2Fss:w@cluster0.abc.mongodb.net/deliveries?retryWrites=true",
+        );
+        assert_eq!(
+            s.uri,
+            "mongodb+srv://cluster0.abc.mongodb.net/deliveries?retryWrites=true"
+        );
         assert_eq!(s.username.as_deref(), Some("app@ro"));
         assert_eq!(s.password.as_deref(), Some("p/ss:w"));
     }
@@ -197,7 +226,14 @@ mod tests {
         assert_eq!(s.uri, "mongodb://h1:27017,h2:27017/?replicaSet=rs0");
         assert_eq!(s.username.as_deref(), Some("u"));
         let none = split_credentials("mongodb://localhost:27017");
-        assert_eq!(none, SplitUri { uri: "mongodb://localhost:27017".into(), username: None, password: None });
+        assert_eq!(
+            none,
+            SplitUri {
+                uri: "mongodb://localhost:27017".into(),
+                username: None,
+                password: None
+            }
+        );
         let user_only = split_credentials("mongodb://bob@localhost");
         assert_eq!(user_only.username.as_deref(), Some("bob"));
         assert_eq!(user_only.password, None);

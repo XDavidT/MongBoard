@@ -49,7 +49,7 @@ export function ConnectionEditor({ id, newId }: { id: string | null; newId: stri
     setResult(null);
     try {
       const saved = await api.saveProfile(profile, password);
-      if (andConnect) await api.openBrowser(saved.id);
+      if (andConnect) await api.openConnection(saved.id);
       await getCurrentWindow().close();
     } catch (e) {
       setResult({ ok: false, error: errorText(e) });
@@ -157,7 +157,9 @@ export function ConnectionEditor({ id, newId }: { id: string | null; newId: stri
                   <input className="input" value={profile.username ?? ""} onChange={(e) => set("username", e.target.value)} autoComplete="off" />
                 </label>
                 <label className="field">
-                  Password {hasPassword && password === null && <span className="muted" style={{ fontWeight: 400 }}>· saved in Keychain</span>}
+                  <span>
+                    Password {hasPassword && password === null && <span className="muted" style={{ fontWeight: 400 }}>· saved in Keychain</span>}
+                  </span>
                   <input
                     className="input"
                     type="password"

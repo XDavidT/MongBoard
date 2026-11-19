@@ -13,13 +13,13 @@
     "withGlobalTauri": false,
     "windows": [
       {
-        "label": "manager",
-        "title": "Connection Manager",
-        "url": "index.html?view=manager",
-        "width": 1000,
-        "height": 640,
-        "minWidth": 760,
-        "minHeight": 420,
+        "label": "main",
+        "title": "MongBoard",
+        "url": "index.html?view=main",
+        "width": 1360,
+        "height": 860,
+        "minWidth": 960,
+        "minHeight": 600,
         "center": true
       }
     ],
@@ -29,7 +29,10 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["app", "dmg"],
+    "targets": [
+      "app",
+      "dmg"
+    ],
     "category": "DeveloperTool",
     "shortDescription": "Desktop MongoDB client",
     "icon": [

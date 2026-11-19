@@ -29,7 +29,10 @@ pub struct ParseError {
 
 /// Parse any shell value.
 pub fn parse_value(input: &str) -> Result<Bson, ParseError> {
-    let mut p = Parser { chars: input.chars().collect(), pos: 0 };
+    let mut p = Parser {
+        chars: input.chars().collect(),
+        pos: 0,
+    };
     p.skip_ws()?;
     let value = p.value()?;
     p.skip_ws()?;
@@ -46,7 +49,11 @@ pub fn parse_document(input: &str) -> Result<Document, ParseError> {
     }
     match parse_value(input)? {
         Bson::Document(d) => Ok(d),
-        _ => Err(ParseError { message: "Expected a document like { … }".into(), line: 1, column: 1 }),
+        _ => Err(ParseError {
+            message: "Expected a document like { … }".into(),
+            line: 1,
+            column: 1,
+        }),
     }
 }
 
@@ -59,11 +66,19 @@ pub fn parse_pipeline(input: &str) -> Result<Vec<Document>, ParseError> {
             .enumerate()
             .map(|(i, b)| match b {
                 Bson::Document(d) => Ok(d),
-                _ => Err(ParseError { message: format!("Stage {} is not a document", i + 1), line: 1, column: 1 }),
+                _ => Err(ParseError {
+                    message: format!("Stage {} is not a document", i + 1),
+                    line: 1,
+                    column: 1,
+                }),
             })
             .collect(),
         Bson::Document(d) => Ok(vec![d]),
-        _ => Err(ParseError { message: "Expected a pipeline like [ { … } ]".into(), line: 1, column: 1 }),
+        _ => Err(ParseError {
+            message: "Expected a pipeline like [ { … } ]".into(),
+            line: 1,
+            column: 1,
+        }),
     }
 }
 
@@ -84,7 +99,11 @@ impl Parser {
                 column += 1;
             }
         }
-        ParseError { message: message.to_string(), line, column }
+        ParseError {
+            message: message.to_string(),
+            line,
+            column,
+        }
     }
 
     fn peek(&self) -> Option<char> {
@@ -226,10 +245,15 @@ impl Parser {
                         '0' => out.push('\0'),
                         'u' => {
                             let code = self.hex4()?;
-                            if (0xD800..0xDC00).contains(&code) && self.peek() == Some('\\') && self.peek_at(1) == Some('u') {
+                            if (0xD800..0xDC00).contains(&code)
+                                && self.peek() == Some('\\')
+                                && self.peek_at(1) == Some('u')
+                            {
                                 self.pos += 2;
                                 let low = self.hex4()?;
-                                let combined = 0x10000 + ((code - 0xD800) << 10) + (low.wrapping_sub(0xDC00) & 0x3FF);
+                                let combined = 0x10000
+                                    + ((code - 0xD800) << 10)
+                                    + (low.wrapping_sub(0xDC00) & 0x3FF);
                                 out.push(char::from_u32(combined).unwrap_or('\u{FFFD}'));
                             } else {
                                 out.push(char::from_u32(code).unwrap_or('\u{FFFD}'));
@@ -279,7 +303,11 @@ impl Parser {
             let word = self.ident();
             let neg = self.chars[start] == '-';
             return match word.as_str() {
-                "Infinity" => Ok(Bson::Double(if neg { f64::NEG_INFINITY } else { f64::INFINITY })),
+                "Infinity" => Ok(Bson::Double(if neg {
+                    f64::NEG_INFINITY
+                } else {
+                    f64::INFINITY
+                })),
                 _ => Err(self.err(&format!("Unexpected '{word}' after sign"))),
             };
         }
@@ -379,7 +407,11 @@ impl Parser {
                     self.expect('(')?;
                     self.expect(')')?;
                 }
-                return Ok(if name == "MinKey" { Bson::MinKey } else { Bson::MaxKey });
+                return Ok(if name == "MinKey" {
+                    Bson::MinKey
+                } else {
+                    Bson::MaxKey
+                });
             }
             _ => {}
         }
@@ -422,7 +454,10 @@ fn make_regex(pattern: String, options: &str) -> Regex {
     let mut opts: Vec<char> = options.chars().filter(|c| "ilmsux".contains(*c)).collect();
     opts.sort_unstable();
     opts.dedup();
-    Regex { pattern, options: opts.into_iter().collect() }
+    Regex {
+        pattern,
+        options: opts.into_iter().collect(),
+    }
 }
 
 fn arg_str(args: &[Bson], i: usize, func: &str) -> Result<String, String> {
@@ -437,7 +472,10 @@ fn arg_i64(args: &[Bson], i: usize, func: &str) -> Result<i64, String> {
         Some(Bson::Int32(v)) => Ok(*v as i64),
         Some(Bson::Int64(v)) => Ok(*v),
         Some(Bson::Double(v)) if v.fract() == 0.0 => Ok(*v as i64),
-        Some(Bson::String(s)) => s.trim().parse::<i64>().map_err(|_| format!("{func}() got an invalid number")),
+        Some(Bson::String(s)) => s
+            .trim()
+            .parse::<i64>()
+            .map_err(|_| format!("{func}() got an invalid number")),
         _ => Err(format!("{func}() expects a number")),
     }
 }
@@ -446,12 +484,17 @@ pub fn parse_date(s: &str) -> Result<DateTime, String> {
     let s = s.trim();
     let candidate = if s.len() == 10 && s.as_bytes().get(4) == Some(&b'-') {
         format!("{s}T00:00:00Z")
-    } else if !s.ends_with('Z') && !s.contains('+') && s.len() >= 19 && s.rfind('-').map(|i| i < 10).unwrap_or(true) {
+    } else if !s.ends_with('Z')
+        && !s.contains('+')
+        && s.len() >= 19
+        && s.rfind('-').map(|i| i < 10).unwrap_or(true)
+    {
         format!("{s}Z")
     } else {
         s.to_string()
     };
-    DateTime::parse_rfc3339_str(&candidate).map_err(|_| format!("Invalid date \"{s}\" (use ISO 8601, e.g. 2026-11-19T14:30:00Z)"))
+    DateTime::parse_rfc3339_str(&candidate)
+        .map_err(|_| format!("Invalid date \"{s}\" (use ISO 8601, e.g. 2026-11-19T14:30:00Z)"))
 }
 
 fn call(name: &str, args: Vec<Bson>) -> Result<Bson, String> {
@@ -471,20 +514,28 @@ fn call(name: &str, args: Vec<Bson>) -> Result<Bson, String> {
             }
             match &args[0] {
                 Bson::String(s) => parse_date(s).map(Bson::DateTime),
-                Bson::Int32(_) | Bson::Int64(_) | Bson::Double(_) => Ok(Bson::DateTime(DateTime::from_millis(arg_i64(&args, 0, name)?))),
+                Bson::Int32(_) | Bson::Int64(_) | Bson::Double(_) => Ok(Bson::DateTime(
+                    DateTime::from_millis(arg_i64(&args, 0, name)?),
+                )),
                 _ => Err(format!("{name}() expects an ISO date string")),
             }
         }
         "NumberInt" | "Int32" => {
             let v = arg_i64(&args, 0, name)?;
-            i32::try_from(v).map(Bson::Int32).map_err(|_| format!("{v} does not fit in a 32-bit integer"))
+            i32::try_from(v)
+                .map(Bson::Int32)
+                .map_err(|_| format!("{v} does not fit in a 32-bit integer"))
         }
         "NumberLong" | "Long" | "Int64" => Ok(Bson::Int64(arg_i64(&args, 0, name)?)),
         "Double" | "NumberDouble" => match args.first() {
             Some(Bson::Int32(v)) => Ok(Bson::Double(*v as f64)),
             Some(Bson::Int64(v)) => Ok(Bson::Double(*v as f64)),
             Some(Bson::Double(v)) => Ok(Bson::Double(*v)),
-            Some(Bson::String(s)) => s.trim().parse::<f64>().map(Bson::Double).map_err(|_| "Double() got an invalid number".to_string()),
+            Some(Bson::String(s)) => s
+                .trim()
+                .parse::<f64>()
+                .map(Bson::Double)
+                .map_err(|_| "Double() got an invalid number".to_string()),
             _ => Err("Double() expects a number".into()),
         },
         "NumberDecimal" | "Decimal128" => {
@@ -495,17 +546,26 @@ fn call(name: &str, args: Vec<Bson>) -> Result<Bson, String> {
                 Some(Bson::Double(v)) => v.to_string(),
                 _ => return Err(format!("{name}() expects a string")),
             };
-            Decimal128::from_str(s.trim()).map(Bson::Decimal128).map_err(|_| format!("Invalid decimal \"{s}\""))
+            Decimal128::from_str(s.trim())
+                .map(Bson::Decimal128)
+                .map_err(|_| format!("Invalid decimal \"{s}\""))
         }
         "Timestamp" => {
             let (t, i) = match args.first() {
                 Some(Bson::Document(d)) => (
-                    d.get("t").and_then(bson_as_i64).ok_or("Timestamp({t, i}) needs t")?,
-                    d.get("i").and_then(bson_as_i64).ok_or("Timestamp({t, i}) needs i")?,
+                    d.get("t")
+                        .and_then(bson_as_i64)
+                        .ok_or("Timestamp({t, i}) needs t")?,
+                    d.get("i")
+                        .and_then(bson_as_i64)
+                        .ok_or("Timestamp({t, i}) needs i")?,
                 ),
                 _ => (arg_i64(&args, 0, name)?, arg_i64(&args, 1, name)?),
             };
-            Ok(Bson::Timestamp(Timestamp { time: t as u32, increment: i as u32 }))
+            Ok(Bson::Timestamp(Timestamp {
+                time: t as u32,
+                increment: i as u32,
+            }))
         }
         "BinData" => {
             let sub = arg_i64(&args, 0, name)? as u8;
@@ -513,16 +573,30 @@ fn call(name: &str, args: Vec<Bson>) -> Result<Bson, String> {
             let bytes = base64::engine::general_purpose::STANDARD
                 .decode(b64.trim())
                 .map_err(|_| "BinData() got invalid base64".to_string())?;
-            Ok(Bson::Binary(Binary { subtype: BinarySubtype::from(sub), bytes }))
+            Ok(Bson::Binary(Binary {
+                subtype: BinarySubtype::from(sub),
+                bytes,
+            }))
         }
         "UUID" => {
-            let s = if args.is_empty() { uuid::Uuid::new_v4().to_string() } else { arg_str(&args, 0, name)? };
+            let s = if args.is_empty() {
+                uuid::Uuid::new_v4().to_string()
+            } else {
+                arg_str(&args, 0, name)?
+            };
             let u = uuid::Uuid::parse_str(s.trim()).map_err(|_| format!("Invalid UUID \"{s}\""))?;
-            Ok(Bson::Binary(Binary { subtype: BinarySubtype::Uuid, bytes: u.as_bytes().to_vec() }))
+            Ok(Bson::Binary(Binary {
+                subtype: BinarySubtype::Uuid,
+                bytes: u.as_bytes().to_vec(),
+            }))
         }
         "RegExp" => {
             let pattern = arg_str(&args, 0, name)?;
-            let flags = if args.len() > 1 { arg_str(&args, 1, name)? } else { String::new() };
+            let flags = if args.len() > 1 {
+                arg_str(&args, 1, name)?
+            } else {
+                String::new()
+            };
             Ok(Bson::RegularExpression(make_regex(pattern, &flags)))
         }
         other => Err(format!("Unknown function {other}()")),
@@ -582,7 +656,9 @@ fn convert_extended_json(doc: Document) -> Result<Bson, String> {
             "$date" => match value {
                 Bson::String(v) => return parse_date(v).map(Bson::DateTime),
                 Bson::Int32(_) | Bson::Int64(_) | Bson::Double(_) => {
-                    return Ok(Bson::DateTime(DateTime::from_millis(bson_as_i64(value).unwrap())));
+                    return Ok(Bson::DateTime(DateTime::from_millis(
+                        bson_as_i64(value).unwrap(),
+                    )));
                 }
                 Bson::DateTime(_) => return Ok(value.clone()),
                 _ => {}
@@ -613,7 +689,10 @@ pub fn to_shell_inline(value: &Bson) -> String {
             if d.is_empty() {
                 return "{}".into();
             }
-            let parts: Vec<String> = d.iter().map(|(k, v)| format!("{}: {}", key_str(k), to_shell_inline(v))).collect();
+            let parts: Vec<String> = d
+                .iter()
+                .map(|(k, v)| format!("{}: {}", key_str(k), to_shell_inline(v)))
+                .collect();
             format!("{{ {} }}", parts.join(", "))
         }
         Bson::Array(items) => {
@@ -627,7 +706,9 @@ pub fn to_shell_inline(value: &Bson) -> String {
 fn key_str(k: &str) -> String {
     let mut chars = k.chars();
     let simple = match chars.next() {
-        Some(c) if c.is_ascii_alphabetic() || c == '_' || c == '$' => k.chars().all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '$'),
+        Some(c) if c.is_ascii_alphabetic() || c == '_' || c == '$' => k
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '$'),
         _ => false,
     };
     if simple {
@@ -645,7 +726,11 @@ pub fn format_double(v: f64) -> String {
     if v.is_nan() {
         "NaN".into()
     } else if v.is_infinite() {
-        if v > 0.0 { "Infinity".into() } else { "-Infinity".into() }
+        if v > 0.0 {
+            "Infinity".into()
+        } else {
+            "-Infinity".into()
+        }
     } else {
         // Debug keeps a decimal point for whole numbers (5.0) and uses the shortest round-trip form.
         format!("{v:?}")
@@ -653,7 +738,8 @@ pub fn format_double(v: f64) -> String {
 }
 
 pub fn format_date(dt: &DateTime) -> String {
-    dt.try_to_rfc3339_string().unwrap_or_else(|_| dt.timestamp_millis().to_string())
+    dt.try_to_rfc3339_string()
+        .unwrap_or_else(|_| dt.timestamp_millis().to_string())
 }
 
 fn scalar(value: &Bson) -> String {
@@ -678,7 +764,11 @@ fn scalar(value: &Bson) -> String {
                 format!("UUID(\"{u}\")")
             } else {
                 let sub: u8 = b.subtype.into();
-                format!("BinData({}, \"{}\")", sub, base64::engine::general_purpose::STANDARD.encode(&b.bytes))
+                format!(
+                    "BinData({}, \"{}\")",
+                    sub,
+                    base64::engine::general_purpose::STANDARD.encode(&b.bytes)
+                )
             }
         }
         Bson::RegularExpression(r) => format!("/{}/{}", r.pattern.replace('/', "\\/"), r.options),
@@ -719,7 +809,9 @@ fn write_value(out: &mut String, value: &Bson, indent: usize) {
                 out.push_str("[]");
                 return;
             }
-            let all_scalar = items.iter().all(|b| !matches!(b, Bson::Document(_) | Bson::Array(_)));
+            let all_scalar = items
+                .iter()
+                .all(|b| !matches!(b, Bson::Document(_) | Bson::Array(_)));
             if all_scalar {
                 let inline = to_shell_inline(value);
                 if inline.len() + indent * 2 <= 80 {
@@ -777,17 +869,31 @@ mod tests {
             }"#,
         )
         .unwrap();
-        assert_eq!(d.get_object_id("_id").unwrap().to_hex(), "6735a1f0c2e4b81a9d0f3e21");
+        assert_eq!(
+            d.get_object_id("_id").unwrap().to_hex(),
+            "6735a1f0c2e4b81a9d0f3e21"
+        );
         assert!(matches!(d.get("eta"), Some(Bson::DateTime(_))));
-        assert_eq!(format_date(d.get_datetime("d2").unwrap()), "2026-11-19T00:00:00Z");
+        assert_eq!(
+            format_date(d.get_datetime("d2").unwrap()),
+            "2026-11-19T00:00:00Z"
+        );
         assert_eq!(d.get("i"), Some(&Bson::Int32(7)));
         assert_eq!(d.get("l"), Some(&Bson::Int64(9)));
         assert_eq!(d.get("dbl"), Some(&Bson::Double(2.0)));
         assert!(matches!(d.get("dec"), Some(Bson::Decimal128(_))));
-        assert_eq!(d.get("ts"), Some(&Bson::Timestamp(Timestamp { time: 1_700_000_000, increment: 3 })));
+        assert_eq!(
+            d.get("ts"),
+            Some(&Bson::Timestamp(Timestamp {
+                time: 1_700_000_000,
+                increment: 3
+            }))
+        );
         assert!(matches!(d.get("u"), Some(Bson::Binary(b)) if b.subtype == BinarySubtype::Uuid));
         assert!(matches!(d.get("b"), Some(Bson::Binary(b)) if b.bytes == b"hello"));
-        assert!(matches!(d.get("r"), Some(Bson::RegularExpression(r)) if r.pattern == "^acme" && r.options == "i"));
+        assert!(
+            matches!(d.get("r"), Some(Bson::RegularExpression(r)) if r.pattern == "^acme" && r.options == "i")
+        );
         assert_eq!(d.get("mn"), Some(&Bson::MinKey));
         assert_eq!(d.get("mx"), Some(&Bson::MaxKey));
     }

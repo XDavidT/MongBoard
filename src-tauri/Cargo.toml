@@ -3,6 +3,8 @@ name = "mongboard"
 version = "0.1.0"
 description = "MongBoard — a desktop MongoDB client"
 edition = "2021"
+license = "MIT"
+repository = "https://github.com/XDavidT/MongBoard"
 publish = false
 
 [lib]

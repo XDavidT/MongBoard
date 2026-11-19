@@ -34,7 +34,10 @@ pub fn run() {
                 }
                 id => {
                     // Other menu actions (run query, add document …) go to the focused window only.
-                    let focused = app.webview_windows().into_values().find(|w| w.is_focused().unwrap_or(false));
+                    let focused = app
+                        .webview_windows()
+                        .into_values()
+                        .find(|w| w.is_focused().unwrap_or(false));
                     if let Some(window) = focused {
                         let _ = app.emit_to(window.label(), "menu", id.to_string());
                     }
@@ -50,9 +53,10 @@ pub fn run() {
             commands::test_connection,
             commands::open_connection_manager,
             commands::open_connection_editor,
-            commands::open_browser,
-            commands::connect,
-            commands::disconnect,
+            commands::open_connection,
+            commands::list_open_connections,
+            commands::close_connection,
+            commands::reconnect,
             commands::list_databases,
             commands::list_collections,
             commands::find,
@@ -67,12 +71,24 @@ pub fn run() {
 }
 
 fn build_menu(app: &tauri::AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
-    let manager = MenuItemBuilder::with_id("connection-manager", "Connection Manager…").accelerator("CmdOrCtrl+Shift+C").build(app)?;
-    let new_conn = MenuItemBuilder::with_id("new-connection", "New Connection…").accelerator("CmdOrCtrl+N").build(app)?;
-    let run_query = MenuItemBuilder::with_id("run-query", "Run Query").accelerator("CmdOrCtrl+Enter").build(app)?;
-    let add_doc = MenuItemBuilder::with_id("add-document", "Add Document…").accelerator("CmdOrCtrl+Shift+N").build(app)?;
-    let edit_doc = MenuItemBuilder::with_id("edit-document", "Edit Document…").accelerator("CmdOrCtrl+E").build(app)?;
-    let refresh = MenuItemBuilder::with_id("refresh", "Refresh").accelerator("CmdOrCtrl+R").build(app)?;
+    let manager = MenuItemBuilder::with_id("connection-manager", "Connection Manager…")
+        .accelerator("CmdOrCtrl+Shift+C")
+        .build(app)?;
+    let new_conn = MenuItemBuilder::with_id("new-connection", "New Connection…")
+        .accelerator("CmdOrCtrl+N")
+        .build(app)?;
+    let run_query = MenuItemBuilder::with_id("run-query", "Run Query")
+        .accelerator("CmdOrCtrl+Enter")
+        .build(app)?;
+    let add_doc = MenuItemBuilder::with_id("add-document", "Add Document…")
+        .accelerator("CmdOrCtrl+Shift+N")
+        .build(app)?;
+    let edit_doc = MenuItemBuilder::with_id("edit-document", "Edit Document…")
+        .accelerator("CmdOrCtrl+E")
+        .build(app)?;
+    let refresh = MenuItemBuilder::with_id("refresh", "Refresh")
+        .accelerator("CmdOrCtrl+R")
+        .build(app)?;
 
     let app_menu = Submenu::with_items(
         app,
@@ -87,7 +103,17 @@ fn build_menu(app: &tauri::AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
             &PredefinedMenuItem::quit(app, None)?,
         ],
     )?;
-    let file = Submenu::with_items(app, "File", true, &[&new_conn, &manager, &PredefinedMenuItem::separator(app)?, &PredefinedMenuItem::close_window(app, None)?])?;
+    let file = Submenu::with_items(
+        app,
+        "File",
+        true,
+        &[
+            &new_conn,
+            &manager,
+            &PredefinedMenuItem::separator(app)?,
+            &PredefinedMenuItem::close_window(app, None)?,
+        ],
+    )?;
     let edit = Submenu::with_items(
         app,
         "Edit",
@@ -102,7 +128,26 @@ fn build_menu(app: &tauri::AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
             &PredefinedMenuItem::select_all(app, None)?,
         ],
     )?;
-    let data = Submenu::with_items(app, "Data", true, &[&run_query, &refresh, &PredefinedMenuItem::separator(app)?, &add_doc, &edit_doc])?;
-    let window = Submenu::with_items(app, "Window", true, &[&PredefinedMenuItem::minimize(app, None)?, &PredefinedMenuItem::fullscreen(app, None)?])?;
+    let data = Submenu::with_items(
+        app,
+        "Data",
+        true,
+        &[
+            &run_query,
+            &refresh,
+            &PredefinedMenuItem::separator(app)?,
+            &add_doc,
+            &edit_doc,
+        ],
+    )?;
+    let window = Submenu::with_items(
+        app,
+        "Window",
+        true,
+        &[
+            &PredefinedMenuItem::minimize(app, None)?,
+            &PredefinedMenuItem::fullscreen(app, None)?,
+        ],
+    )?;
     Menu::with_items(app, &[&app_menu, &file, &edit, &data, &window])
 }

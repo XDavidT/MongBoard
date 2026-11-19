@@ -2,6 +2,9 @@
   "name": "mongboard",
   "private": true,
   "version": "0.1.0",
+  "description": "A fast, native-feeling MongoDB client for macOS",
+  "license": "MIT",
+  "repository": "github:XDavidT/MongBoard",
   "type": "module",
   "scripts": {
     "dev": "vite",

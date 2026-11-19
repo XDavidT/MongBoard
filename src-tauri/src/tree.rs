@@ -65,10 +65,21 @@ fn plural(n: usize, word: &str, open: &str, close: &str) -> String {
 pub fn node(key: String, value: &Bson) -> TreeNode {
     let children = match value {
         Bson::Document(d) => Some(d.iter().map(|(k, v)| node(k.clone(), v)).collect()),
-        Bson::Array(items) => Some(items.iter().enumerate().map(|(i, v)| node(format!("[{i}]"), v)).collect()),
+        Bson::Array(items) => Some(
+            items
+                .iter()
+                .enumerate()
+                .map(|(i, v)| node(format!("[{i}]"), v))
+                .collect(),
+        ),
         _ => None,
     };
-    TreeNode { key, type_name: type_name(value).to_string(), value: display(value), children }
+    TreeNode {
+        key,
+        type_name: type_name(value).to_string(),
+        value: display(value),
+        children,
+    }
 }
 
 /// Top-level row for one result document: `(1) { _id: … }`.

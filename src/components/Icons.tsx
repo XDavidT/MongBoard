@@ -13,3 +13,4 @@ export const Refresh = ({ size = 13 }: P) => <svg {...base(size)}><path d="M20 1
 export const Database = ({ size = 14 }: P) => <svg {...base(size)}><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3" /></svg>;
 export const Collection = ({ size = 14 }: P) => <svg {...base(size)}><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M4 10h16M10 10v10" /></svg>;
 export const Link = ({ size = 13 }: P) => <svg {...base(size)}><path d="M9 7H6a4 4 0 0 0 0 8h3M15 7h3a4 4 0 0 1 0 8h-3M8 11h8" /></svg>;
+export const Server = ({ size = 14 }: P) => <svg {...base(size)}><rect x="3" y="4" width="18" height="7" rx="1.5" /><rect x="3" y="13" width="18" height="7" rx="1.5" /><path d="M7 7.5h.01M7 16.5h.01" /></svg>;

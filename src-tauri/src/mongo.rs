@@ -9,7 +9,6 @@ use futures_util::TryStreamExt;
 use mongodb::options::{AuthMechanism, ClientOptions, Credential};
 use mongodb::Client;
 use serde::Serialize;
-use std::collections::HashMap;
 use std::str::FromStr;
 use std::time::{Duration, Instant};
 use tokio::sync::Mutex;
@@ -17,25 +16,51 @@ use uuid::Uuid;
 
 const QUERY_TIMEOUT: Duration = Duration::from_secs(60);
 
-/// Open clients, one per connection profile.
+/// Open connections, in the order they were opened (the sidebar order).
 #[derive(Default)]
 pub struct Sessions {
-    clients: Mutex<HashMap<Uuid, Client>>,
+    open: Mutex<Vec<(Uuid, Client, ServerInfo)>>,
 }
 
 impl Sessions {
-    pub async fn insert(&self, id: Uuid, client: Client) {
-        if let Some(old) = self.clients.lock().await.insert(id, client) {
+    pub async fn insert(&self, id: Uuid, client: Client, info: ServerInfo) {
+        let mut open = self.open.lock().await;
+        if let Some(slot) = open.iter_mut().find(|(i, _, _)| *i == id) {
+            let old = std::mem::replace(&mut slot.1, client);
+            slot.2 = info;
             tokio::spawn(async move { old.shutdown().await });
+        } else {
+            open.push((id, client, info));
         }
     }
 
     pub async fn get(&self, id: Uuid) -> AppResult<Client> {
-        self.clients.lock().await.get(&id).cloned().ok_or(AppError::NotConnected)
+        self.open
+            .lock()
+            .await
+            .iter()
+            .find(|(i, _, _)| *i == id)
+            .map(|(_, c, _)| c.clone())
+            .ok_or(AppError::NotConnected)
+    }
+
+    pub async fn list(&self) -> Vec<(Uuid, ServerInfo)> {
+        self.open
+            .lock()
+            .await
+            .iter()
+            .map(|(i, _, info)| (*i, info.clone()))
+            .collect()
     }
 
     pub async fn remove(&self, id: Uuid) {
-        if let Some(client) = self.clients.lock().await.remove(&id) {
+        let removed = {
+            let mut open = self.open.lock().await;
+            open.iter()
+                .position(|(i, _, _)| *i == id)
+                .map(|pos| open.remove(pos))
+        };
+        if let Some((_, client, _)) = removed {
             client.shutdown().await;
         }
     }
@@ -51,7 +76,11 @@ pub async fn build_client(profile: &Profile, password: Option<String>) -> AppRes
     match profile.auth {
         AuthKind::None => {}
         AuthKind::Password => {
-            let username = profile.username.clone().filter(|u| !u.is_empty()).ok_or_else(|| AppError::msg("Username is required"))?;
+            let username = profile
+                .username
+                .clone()
+                .filter(|u| !u.is_empty())
+                .ok_or_else(|| AppError::msg("Username is required"))?;
             let mut credential = options.credential.clone().unwrap_or_default();
             credential.username = Some(username);
             credential.password = password;
@@ -59,7 +88,8 @@ pub async fn build_client(profile: &Profile, password: Option<String>) -> AppRes
                 credential.source = Some(source);
             }
             if let Some(mech) = profile.auth_mechanism.clone().filter(|s| !s.is_empty()) {
-                credential.mechanism = Some(AuthMechanism::from_str(&mech).map_err(|e| AppError::msg(e.to_string()))?);
+                credential.mechanism =
+                    Some(AuthMechanism::from_str(&mech).map_err(|e| AppError::msg(e.to_string()))?);
             }
             options.credential = Some(credential);
         }
@@ -82,7 +112,10 @@ async fn aws_credential(aws_profile: Option<&str>) -> AppResult<Credential> {
     };
 
     use aws_credential_types::provider::ProvideCredentials;
-    let config = aws_config::defaults(aws_config::BehaviorVersion::latest()).profile_name(name).load().await;
+    let config = aws_config::defaults(aws_config::BehaviorVersion::latest())
+        .profile_name(name)
+        .load()
+        .await;
     let provider = config
         .credentials_provider()
         .ok_or_else(|| AppError::msg(format!("AWS profile \"{name}\" has no credentials")))?;
@@ -98,7 +131,7 @@ async fn aws_credential(aws_profile: Option<&str>) -> AppResult<Credential> {
     Ok(credential)
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ServerInfo {
     pub version: String,
@@ -117,11 +150,18 @@ pub async fn server_info(client: &Client) -> AppResult<ServerInfo> {
         "Sharded cluster (mongos)".to_string()
     } else if let Ok(set) = hello.get_str("setName") {
         let members = hello.get_array("hosts").map(|h| h.len()).unwrap_or(0);
-        format!("Replica set {set} · {members} node{}", if members == 1 { "" } else { "s" })
+        format!(
+            "Replica set {set} · {members} node{}",
+            if members == 1 { "" } else { "s" }
+        )
     } else {
         "Standalone".to_string()
     };
-    Ok(ServerInfo { version, topology, latency_ms })
+    Ok(ServerInfo {
+        version,
+        topology,
+        latency_ms,
+    })
 }
 
 #[derive(Debug, Serialize)]
@@ -131,16 +171,28 @@ pub struct DatabaseInfo {
     pub size_on_disk: u64,
 }
 
-pub async fn list_databases(client: &Client, fallback: Option<&str>) -> AppResult<Vec<DatabaseInfo>> {
+pub async fn list_databases(
+    client: &Client,
+    fallback: Option<&str>,
+) -> AppResult<Vec<DatabaseInfo>> {
     match client.list_databases().await {
         Ok(specs) => {
-            let mut dbs: Vec<DatabaseInfo> = specs.into_iter().map(|s| DatabaseInfo { name: s.name, size_on_disk: s.size_on_disk }).collect();
+            let mut dbs: Vec<DatabaseInfo> = specs
+                .into_iter()
+                .map(|s| DatabaseInfo {
+                    name: s.name,
+                    size_on_disk: s.size_on_disk,
+                })
+                .collect();
             dbs.sort_by(|a, b| a.name.cmp(&b.name));
             Ok(dbs)
         }
         // Users without listDatabases rights can still browse their default database.
         Err(e) => match fallback.filter(|f| !f.is_empty()) {
-            Some(db) => Ok(vec![DatabaseInfo { name: db.to_string(), size_on_disk: 0 }]),
+            Some(db) => Ok(vec![DatabaseInfo {
+                name: db.to_string(),
+                size_on_disk: 0,
+            }]),
             None => Err(e.into()),
         },
     }
@@ -155,7 +207,12 @@ pub struct CollectionInfo {
 }
 
 pub async fn list_collections(client: &Client, db: &str) -> AppResult<Vec<CollectionInfo>> {
-    let specs: Vec<_> = client.database(db).list_collections().await?.try_collect().await?;
+    let specs: Vec<_> = client
+        .database(db)
+        .list_collections()
+        .await?
+        .try_collect()
+        .await?;
     let mut out: Vec<CollectionInfo> = specs
         .into_iter()
         .map(|s| CollectionInfo {
@@ -231,10 +288,16 @@ pub async fn find(client: &Client, req: FindRequest) -> AppResult<FindResult> {
     let projection = shell_json::parse_document(&req.projection)?;
     let sort = shell_json::parse_document(&req.sort)?;
     let limit = req.limit.clamp(1, 10_000);
-    let coll = client.database(&req.db).collection::<Document>(&req.collection);
+    let coll = client
+        .database(&req.db)
+        .collection::<Document>(&req.collection);
 
     let started = Instant::now();
-    let mut action = coll.find(filter).skip(req.skip).limit(limit + 1).max_time(QUERY_TIMEOUT);
+    let mut action = coll
+        .find(filter)
+        .skip(req.skip)
+        .limit(limit + 1)
+        .max_time(QUERY_TIMEOUT);
     if !projection.is_empty() {
         action = action.projection(projection);
     }
@@ -245,7 +308,12 @@ pub async fn find(client: &Client, req: FindRequest) -> AppResult<FindResult> {
     let elapsed_ms = started.elapsed().as_millis();
     let has_more = docs.len() as i64 > limit;
     docs.truncate(limit as usize);
-    Ok(FindResult { docs: to_result_docs(docs, req.skip as usize), elapsed_ms, skip: req.skip, has_more })
+    Ok(FindResult {
+        docs: to_result_docs(docs, req.skip as usize),
+        elapsed_ms,
+        skip: req.skip,
+        has_more,
+    })
 }
 
 pub async fn count(client: &Client, db: &str, collection: &str, filter: &str) -> AppResult<u64> {
@@ -268,7 +336,13 @@ pub async fn insert(client: &Client, db: &str, collection: &str, text: &str) -> 
 }
 
 /// Replace the document whose `_id` is `id_shell` with `text`.
-pub async fn replace(client: &Client, db: &str, collection: &str, id_shell: &str, text: &str) -> AppResult<u64> {
+pub async fn replace(
+    client: &Client,
+    db: &str,
+    collection: &str,
+    id_shell: &str,
+    text: &str,
+) -> AppResult<u64> {
     let filter = id_filter(id_shell)?;
     let mut doc = shell_json::parse_document(text)?;
     match doc.get("_id") {
@@ -276,14 +350,18 @@ pub async fn replace(client: &Client, db: &str, collection: &str, id_shell: &str
             doc.insert("_id", filter.get("_id").cloned().unwrap_or(Bson::Null));
         }
         Some(new_id) if Some(new_id) != filter.get("_id") => {
-            return Err(AppError::msg("_id can't be changed. Use Duplicate to save a copy with a new _id."));
+            return Err(AppError::msg(
+                "_id can't be changed. Use Duplicate to save a copy with a new _id.",
+            ));
         }
         _ => {}
     }
     let coll = client.database(db).collection::<Document>(collection);
     let result = coll.replace_one(filter, doc).await?;
     if result.matched_count == 0 {
-        return Err(AppError::msg("The document no longer exists (it may have been deleted)"));
+        return Err(AppError::msg(
+            "The document no longer exists (it may have been deleted)",
+        ));
     }
     Ok(result.modified_count)
 }
@@ -334,16 +412,29 @@ mod integration {
             .await
             .unwrap();
         assert!(id.starts_with("ObjectId(\""));
-        insert(&client, &db, coll, r#"{ orderNo: "A-2", status: "done" }"#).await.unwrap();
+        insert(&client, &db, coll, r#"{ orderNo: "A-2", status: "done" }"#)
+            .await
+            .unwrap();
 
         let dbs = list_databases(&client, None).await.unwrap();
         assert!(dbs.iter().any(|d| d.name == db));
         let cols = list_collections(&client, &db).await.unwrap();
         assert_eq!(cols.len(), 1);
 
-        let page = find(&client, FindRequest { db: db.clone(), collection: coll.into(), filter: "{ status: 'new' }".into(), projection: String::new(), sort: "{ orderNo: 1 }".into(), skip: 0, limit: 50 })
-            .await
-            .unwrap();
+        let page = find(
+            &client,
+            FindRequest {
+                db: db.clone(),
+                collection: coll.into(),
+                filter: "{ status: 'new' }".into(),
+                projection: String::new(),
+                sort: "{ orderNo: 1 }".into(),
+                skip: 0,
+                limit: 50,
+            },
+        )
+        .await
+        .unwrap();
         assert_eq!(page.docs.len(), 1);
         assert!(!page.has_more);
         let doc = &page.docs[0];
@@ -352,17 +443,41 @@ mod integration {
         assert_eq!(count(&client, &db, coll, "{}").await.unwrap(), 2);
 
         // Paging: limit 1 over 2 docs reports has_more.
-        let first = find(&client, FindRequest { db: db.clone(), collection: coll.into(), filter: String::new(), projection: String::new(), sort: "{ orderNo: 1 }".into(), skip: 0, limit: 1 })
-            .await
-            .unwrap();
+        let first = find(
+            &client,
+            FindRequest {
+                db: db.clone(),
+                collection: coll.into(),
+                filter: String::new(),
+                projection: String::new(),
+                sort: "{ orderNo: 1 }".into(),
+                skip: 0,
+                limit: 1,
+            },
+        )
+        .await
+        .unwrap();
         assert!(first.has_more);
 
         // Edit: change status, keep types.
-        let edited = doc.shell.replace("status: \"new\"", "status: \"out_for_delivery\"");
+        let edited = doc
+            .shell
+            .replace("status: \"new\"", "status: \"out_for_delivery\"");
         assert_eq!(replace(&client, &db, coll, &id, &edited).await.unwrap(), 1);
-        let again = find(&client, FindRequest { db: db.clone(), collection: coll.into(), filter: format!("{{ _id: {id} }}"), projection: String::new(), sort: String::new(), skip: 0, limit: 5 })
-            .await
-            .unwrap();
+        let again = find(
+            &client,
+            FindRequest {
+                db: db.clone(),
+                collection: coll.into(),
+                filter: format!("{{ _id: {id} }}"),
+                projection: String::new(),
+                sort: String::new(),
+                skip: 0,
+                limit: 5,
+            },
+        )
+        .await
+        .unwrap();
         assert!(again.docs[0].shell.contains("out_for_delivery"));
         assert!(again.docs[0].shell.contains("n: NumberLong(5)"));
 
@@ -371,8 +486,15 @@ mod integration {
         assert!(replace(&client, &db, coll, &id, &bad).await.is_err());
 
         // Duplicate = insert the copy without _id.
-        insert(&client, &db, coll, &again.docs[0].shell_without_id).await.unwrap();
-        assert_eq!(count(&client, &db, coll, "{ orderNo: 'A-1' }").await.unwrap(), 2);
+        insert(&client, &db, coll, &again.docs[0].shell_without_id)
+            .await
+            .unwrap();
+        assert_eq!(
+            count(&client, &db, coll, "{ orderNo: 'A-1' }")
+                .await
+                .unwrap(),
+            2
+        );
 
         // Delete one.
         assert_eq!(delete(&client, &db, coll, &id).await.unwrap(), 1);

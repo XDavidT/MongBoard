@@ -1,0 +1,655 @@
+[
+  {
+    "id": "ObjectId(\"6735a1f0c2e4b81a9d0f3e21\")",
+    "shell": "{\n  _id: ObjectId(\"6735a1f0c2e4b81a9d0f3e21\"),\n  orderNo: \"ORD-2026-118402\",\n  tenantId: \"acme-ca\",\n  status: \"out_for_delivery\",\n  eta: ISODate(\"2026-11-19T14:30:00Z\"),\n  attempts: 1,\n  codAmount: 0.0,\n  signatureRequired: true,\n  driver: {\n    id: \"drv_2291\",\n    vehicle: \"box-truck\",\n    phoneVerified: true\n  },\n  stops: [\n    {\n      zip: \"M5V 2T6\",\n      seq: 1,\n      tz: \"America/Toronto\"\n    },\n    {\n      zip: \"M4C 1B5\",\n      seq: 2,\n      tz: \"America/Toronto\"\n    },\n    {\n      zip: \"M6K 3P6\",\n      seq: 3,\n      tz: \"America/Toronto\"\n    }\n  ],\n  items: NumberLong(14),\n  proofOfDelivery: null\n}",
+    "shellWithoutId": "{\n  orderNo: \"ORD-2026-118402\",\n  tenantId: \"acme-ca\",\n  status: \"out_for_delivery\",\n  eta: ISODate(\"2026-11-19T14:30:00Z\"),\n  attempts: 1,\n  codAmount: 0.0,\n  signatureRequired: true,\n  driver: {\n    id: \"drv_2291\",\n    vehicle: \"box-truck\",\n    phoneVerified: true\n  },\n  stops: [\n    {\n      zip: \"M5V 2T6\",\n      seq: 1,\n      tz: \"America/Toronto\"\n    },\n    {\n      zip: \"M4C 1B5\",\n      seq: 2,\n      tz: \"America/Toronto\"\n    },\n    {\n      zip: \"M6K 3P6\",\n      seq: 3,\n      tz: \"America/Toronto\"\n    }\n  ],\n  items: NumberLong(14),\n  proofOfDelivery: null\n}",
+    "tree": {
+      "key": "(1) { _id: 6735a1f0c2e4b81a9d0f3e21 }",
+      "typeName": "Document",
+      "value": "{ 12 fields }",
+      "children": [
+        {
+          "key": "_id",
+          "typeName": "ObjectId",
+          "value": "6735a1f0c2e4b81a9d0f3e21"
+        },
+        {
+          "key": "orderNo",
+          "typeName": "String",
+          "value": "ORD-2026-118402"
+        },
+        {
+          "key": "tenantId",
+          "typeName": "String",
+          "value": "acme-ca"
+        },
+        {
+          "key": "status",
+          "typeName": "String",
+          "value": "out_for_delivery"
+        },
+        {
+          "key": "eta",
+          "typeName": "Date",
+          "value": "2026-11-19T14:30:00Z"
+        },
+        {
+          "key": "attempts",
+          "typeName": "Int32",
+          "value": "1"
+        },
+        {
+          "key": "codAmount",
+          "typeName": "Double",
+          "value": "0.0"
+        },
+        {
+          "key": "signatureRequired",
+          "typeName": "Boolean",
+          "value": "true"
+        },
+        {
+          "key": "driver",
+          "typeName": "Object",
+          "value": "{ 3 fields }",
+          "children": [
+            {
+              "key": "id",
+              "typeName": "String",
+              "value": "drv_2291"
+            },
+            {
+              "key": "vehicle",
+              "typeName": "String",
+              "value": "box-truck"
+            },
+            {
+              "key": "phoneVerified",
+              "typeName": "Boolean",
+              "value": "true"
+            }
+          ]
+        },
+        {
+          "key": "stops",
+          "typeName": "Array",
+          "value": "[ 3 elements ]",
+          "children": [
+            {
+              "key": "[0]",
+              "typeName": "Object",
+              "value": "{ 3 fields }",
+              "children": [
+                {
+                  "key": "zip",
+                  "typeName": "String",
+                  "value": "M5V 2T6"
+                },
+                {
+                  "key": "seq",
+                  "typeName": "Int32",
+                  "value": "1"
+                },
+                {
+                  "key": "tz",
+                  "typeName": "String",
+                  "value": "America/Toronto"
+                }
+              ]
+            },
+            {
+              "key": "[1]",
+              "typeName": "Object",
+              "value": "{ 3 fields }",
+              "children": [
+                {
+                  "key": "zip",
+                  "typeName": "String",
+                  "value": "M4C 1B5"
+                },
+                {
+                  "key": "seq",
+                  "typeName": "Int32",
+                  "value": "2"
+                },
+                {
+                  "key": "tz",
+                  "typeName": "String",
+                  "value": "America/Toronto"
+                }
+              ]
+            },
+            {
+              "key": "[2]",
+              "typeName": "Object",
+              "value": "{ 3 fields }",
+              "children": [
+                {
+                  "key": "zip",
+                  "typeName": "String",
+                  "value": "M6K 3P6"
+                },
+                {
+                  "key": "seq",
+                  "typeName": "Int32",
+                  "value": "3"
+                },
+                {
+                  "key": "tz",
+                  "typeName": "String",
+                  "value": "America/Toronto"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "items",
+          "typeName": "Int64",
+          "value": "14"
+        },
+        {
+          "key": "proofOfDelivery",
+          "typeName": "Null",
+          "value": "null"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ObjectId(\"6735a1f0c2e4b81a9d0f3e22\")",
+    "shell": "{\n  _id: ObjectId(\"6735a1f0c2e4b81a9d0f3e22\"),\n  orderNo: \"ORD-2026-118407\",\n  tenantId: \"acme-ca\",\n  status: \"out_for_delivery\",\n  eta: ISODate(\"2026-11-19T14:45:00Z\"),\n  attempts: 1,\n  codAmount: 49.9,\n  signatureRequired: false,\n  driver: {\n    id: \"drv_1874\",\n    vehicle: \"van\",\n    phoneVerified: true\n  },\n  stops: [\n    {\n      zip: \"L4W 5K6\",\n      seq: 1,\n      tz: \"America/Toronto\"\n    },\n    {\n      zip: \"L5B 3C2\",\n      seq: 2,\n      tz: \"America/Toronto\"\n    }\n  ],\n  items: NumberLong(3),\n  proofOfDelivery: null\n}",
+    "shellWithoutId": "{\n  orderNo: \"ORD-2026-118407\",\n  tenantId: \"acme-ca\",\n  status: \"out_for_delivery\",\n  eta: ISODate(\"2026-11-19T14:45:00Z\"),\n  attempts: 1,\n  codAmount: 49.9,\n  signatureRequired: false,\n  driver: {\n    id: \"drv_1874\",\n    vehicle: \"van\",\n    phoneVerified: true\n  },\n  stops: [\n    {\n      zip: \"L4W 5K6\",\n      seq: 1,\n      tz: \"America/Toronto\"\n    },\n    {\n      zip: \"L5B 3C2\",\n      seq: 2,\n      tz: \"America/Toronto\"\n    }\n  ],\n  items: NumberLong(3),\n  proofOfDelivery: null\n}",
+    "tree": {
+      "key": "(2) { _id: 6735a1f0c2e4b81a9d0f3e22 }",
+      "typeName": "Document",
+      "value": "{ 12 fields }",
+      "children": [
+        {
+          "key": "_id",
+          "typeName": "ObjectId",
+          "value": "6735a1f0c2e4b81a9d0f3e22"
+        },
+        {
+          "key": "orderNo",
+          "typeName": "String",
+          "value": "ORD-2026-118407"
+        },
+        {
+          "key": "tenantId",
+          "typeName": "String",
+          "value": "acme-ca"
+        },
+        {
+          "key": "status",
+          "typeName": "String",
+          "value": "out_for_delivery"
+        },
+        {
+          "key": "eta",
+          "typeName": "Date",
+          "value": "2026-11-19T14:45:00Z"
+        },
+        {
+          "key": "attempts",
+          "typeName": "Int32",
+          "value": "1"
+        },
+        {
+          "key": "codAmount",
+          "typeName": "Double",
+          "value": "49.9"
+        },
+        {
+          "key": "signatureRequired",
+          "typeName": "Boolean",
+          "value": "false"
+        },
+        {
+          "key": "driver",
+          "typeName": "Object",
+          "value": "{ 3 fields }",
+          "children": [
+            {
+              "key": "id",
+              "typeName": "String",
+              "value": "drv_1874"
+            },
+            {
+              "key": "vehicle",
+              "typeName": "String",
+              "value": "van"
+            },
+            {
+              "key": "phoneVerified",
+              "typeName": "Boolean",
+              "value": "true"
+            }
+          ]
+        },
+        {
+          "key": "stops",
+          "typeName": "Array",
+          "value": "[ 2 elements ]",
+          "children": [
+            {
+              "key": "[0]",
+              "typeName": "Object",
+              "value": "{ 3 fields }",
+              "children": [
+                {
+                  "key": "zip",
+                  "typeName": "String",
+                  "value": "L4W 5K6"
+                },
+                {
+                  "key": "seq",
+                  "typeName": "Int32",
+                  "value": "1"
+                },
+                {
+                  "key": "tz",
+                  "typeName": "String",
+                  "value": "America/Toronto"
+                }
+              ]
+            },
+            {
+              "key": "[1]",
+              "typeName": "Object",
+              "value": "{ 3 fields }",
+              "children": [
+                {
+                  "key": "zip",
+                  "typeName": "String",
+                  "value": "L5B 3C2"
+                },
+                {
+                  "key": "seq",
+                  "typeName": "Int32",
+                  "value": "2"
+                },
+                {
+                  "key": "tz",
+                  "typeName": "String",
+                  "value": "America/Toronto"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "items",
+          "typeName": "Int64",
+          "value": "3"
+        },
+        {
+          "key": "proofOfDelivery",
+          "typeName": "Null",
+          "value": "null"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ObjectId(\"6735a1f1c2e4b81a9d0f3e2a\")",
+    "shell": "{\n  _id: ObjectId(\"6735a1f1c2e4b81a9d0f3e2a\"),\n  orderNo: \"ORD-2026-118415\",\n  tenantId: \"northline\",\n  status: \"out_for_delivery\",\n  eta: ISODate(\"2026-11-19T15:10:00Z\"),\n  attempts: 2,\n  codAmount: 0.0,\n  signatureRequired: true,\n  driver: {\n    id: \"drv_3050\",\n    vehicle: \"box-truck\",\n    phoneVerified: false\n  },\n  stops: [\n    {\n      zip: \"V6B 1A1\",\n      seq: 1,\n      tz: \"America/Vancouver\"\n    }\n  ],\n  items: NumberLong(7),\n  proofOfDelivery: null\n}",
+    "shellWithoutId": "{\n  orderNo: \"ORD-2026-118415\",\n  tenantId: \"northline\",\n  status: \"out_for_delivery\",\n  eta: ISODate(\"2026-11-19T15:10:00Z\"),\n  attempts: 2,\n  codAmount: 0.0,\n  signatureRequired: true,\n  driver: {\n    id: \"drv_3050\",\n    vehicle: \"box-truck\",\n    phoneVerified: false\n  },\n  stops: [\n    {\n      zip: \"V6B 1A1\",\n      seq: 1,\n      tz: \"America/Vancouver\"\n    }\n  ],\n  items: NumberLong(7),\n  proofOfDelivery: null\n}",
+    "tree": {
+      "key": "(3) { _id: 6735a1f1c2e4b81a9d0f3e2a }",
+      "typeName": "Document",
+      "value": "{ 12 fields }",
+      "children": [
+        {
+          "key": "_id",
+          "typeName": "ObjectId",
+          "value": "6735a1f1c2e4b81a9d0f3e2a"
+        },
+        {
+          "key": "orderNo",
+          "typeName": "String",
+          "value": "ORD-2026-118415"
+        },
+        {
+          "key": "tenantId",
+          "typeName": "String",
+          "value": "northline"
+        },
+        {
+          "key": "status",
+          "typeName": "String",
+          "value": "out_for_delivery"
+        },
+        {
+          "key": "eta",
+          "typeName": "Date",
+          "value": "2026-11-19T15:10:00Z"
+        },
+        {
+          "key": "attempts",
+          "typeName": "Int32",
+          "value": "2"
+        },
+        {
+          "key": "codAmount",
+          "typeName": "Double",
+          "value": "0.0"
+        },
+        {
+          "key": "signatureRequired",
+          "typeName": "Boolean",
+          "value": "true"
+        },
+        {
+          "key": "driver",
+          "typeName": "Object",
+          "value": "{ 3 fields }",
+          "children": [
+            {
+              "key": "id",
+              "typeName": "String",
+              "value": "drv_3050"
+            },
+            {
+              "key": "vehicle",
+              "typeName": "String",
+              "value": "box-truck"
+            },
+            {
+              "key": "phoneVerified",
+              "typeName": "Boolean",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "key": "stops",
+          "typeName": "Array",
+          "value": "[ 1 element ]",
+          "children": [
+            {
+              "key": "[0]",
+              "typeName": "Object",
+              "value": "{ 3 fields }",
+              "children": [
+                {
+                  "key": "zip",
+                  "typeName": "String",
+                  "value": "V6B 1A1"
+                },
+                {
+                  "key": "seq",
+                  "typeName": "Int32",
+                  "value": "1"
+                },
+                {
+                  "key": "tz",
+                  "typeName": "String",
+                  "value": "America/Vancouver"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "items",
+          "typeName": "Int64",
+          "value": "7"
+        },
+        {
+          "key": "proofOfDelivery",
+          "typeName": "Null",
+          "value": "null"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ObjectId(\"6735a1f2c2e4b81a9d0f3e31\")",
+    "shell": "{\n  _id: ObjectId(\"6735a1f2c2e4b81a9d0f3e31\"),\n  orderNo: \"ORD-2026-118421\",\n  tenantId: \"metro-ny\",\n  status: \"out_for_delivery\",\n  eta: ISODate(\"2026-11-19T15:20:00Z\"),\n  attempts: 1,\n  codAmount: 120.0,\n  signatureRequired: true,\n  driver: {\n    id: \"drv_0412\",\n    vehicle: \"van\",\n    phoneVerified: true\n  },\n  stops: [\n    {\n      zip: \"10001\",\n      seq: 1,\n      tz: \"America/New_York\"\n    },\n    {\n      zip: \"10011\",\n      seq: 2,\n      tz: \"America/New_York\"\n    }\n  ],\n  items: NumberLong(2),\n  proofOfDelivery: null\n}",
+    "shellWithoutId": "{\n  orderNo: \"ORD-2026-118421\",\n  tenantId: \"metro-ny\",\n  status: \"out_for_delivery\",\n  eta: ISODate(\"2026-11-19T15:20:00Z\"),\n  attempts: 1,\n  codAmount: 120.0,\n  signatureRequired: true,\n  driver: {\n    id: \"drv_0412\",\n    vehicle: \"van\",\n    phoneVerified: true\n  },\n  stops: [\n    {\n      zip: \"10001\",\n      seq: 1,\n      tz: \"America/New_York\"\n    },\n    {\n      zip: \"10011\",\n      seq: 2,\n      tz: \"America/New_York\"\n    }\n  ],\n  items: NumberLong(2),\n  proofOfDelivery: null\n}",
+    "tree": {
+      "key": "(4) { _id: 6735a1f2c2e4b81a9d0f3e31 }",
+      "typeName": "Document",
+      "value": "{ 12 fields }",
+      "children": [
+        {
+          "key": "_id",
+          "typeName": "ObjectId",
+          "value": "6735a1f2c2e4b81a9d0f3e31"
+        },
+        {
+          "key": "orderNo",
+          "typeName": "String",
+          "value": "ORD-2026-118421"
+        },
+        {
+          "key": "tenantId",
+          "typeName": "String",
+          "value": "metro-ny"
+        },
+        {
+          "key": "status",
+          "typeName": "String",
+          "value": "out_for_delivery"
+        },
+        {
+          "key": "eta",
+          "typeName": "Date",
+          "value": "2026-11-19T15:20:00Z"
+        },
+        {
+          "key": "attempts",
+          "typeName": "Int32",
+          "value": "1"
+        },
+        {
+          "key": "codAmount",
+          "typeName": "Double",
+          "value": "120.0"
+        },
+        {
+          "key": "signatureRequired",
+          "typeName": "Boolean",
+          "value": "true"
+        },
+        {
+          "key": "driver",
+          "typeName": "Object",
+          "value": "{ 3 fields }",
+          "children": [
+            {
+              "key": "id",
+              "typeName": "String",
+              "value": "drv_0412"
+            },
+            {
+              "key": "vehicle",
+              "typeName": "String",
+              "value": "van"
+            },
+            {
+              "key": "phoneVerified",
+              "typeName": "Boolean",
+              "value": "true"
+            }
+          ]
+        },
+        {
+          "key": "stops",
+          "typeName": "Array",
+          "value": "[ 2 elements ]",
+          "children": [
+            {
+              "key": "[0]",
+              "typeName": "Object",
+              "value": "{ 3 fields }",
+              "children": [
+                {
+                  "key": "zip",
+                  "typeName": "String",
+                  "value": "10001"
+                },
+                {
+                  "key": "seq",
+                  "typeName": "Int32",
+                  "value": "1"
+                },
+                {
+                  "key": "tz",
+                  "typeName": "String",
+                  "value": "America/New_York"
+                }
+              ]
+            },
+            {
+              "key": "[1]",
+              "typeName": "Object",
+              "value": "{ 3 fields }",
+              "children": [
+                {
+                  "key": "zip",
+                  "typeName": "String",
+                  "value": "10011"
+                },
+                {
+                  "key": "seq",
+                  "typeName": "Int32",
+                  "value": "2"
+                },
+                {
+                  "key": "tz",
+                  "typeName": "String",
+                  "value": "America/New_York"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "items",
+          "typeName": "Int64",
+          "value": "2"
+        },
+        {
+          "key": "proofOfDelivery",
+          "typeName": "Null",
+          "value": "null"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ObjectId(\"6735a1f3c2e4b81a9d0f3e40\")",
+    "shell": "{\n  _id: ObjectId(\"6735a1f3c2e4b81a9d0f3e40\"),\n  orderNo: \"ORD-2026-118433\",\n  tenantId: \"bayfreight\",\n  status: \"out_for_delivery\",\n  eta: ISODate(\"2026-11-19T16:05:00Z\"),\n  attempts: 1,\n  codAmount: 0.0,\n  signatureRequired: false,\n  driver: {\n    id: \"drv_7781\",\n    vehicle: \"box-truck\",\n    phoneVerified: true\n  },\n  stops: [\n    {\n      zip: \"94107\",\n      seq: 1,\n      tz: \"America/Los_Angeles\"\n    }\n  ],\n  items: NumberLong(11),\n  proofOfDelivery: null\n}",
+    "shellWithoutId": "{\n  orderNo: \"ORD-2026-118433\",\n  tenantId: \"bayfreight\",\n  status: \"out_for_delivery\",\n  eta: ISODate(\"2026-11-19T16:05:00Z\"),\n  attempts: 1,\n  codAmount: 0.0,\n  signatureRequired: false,\n  driver: {\n    id: \"drv_7781\",\n    vehicle: \"box-truck\",\n    phoneVerified: true\n  },\n  stops: [\n    {\n      zip: \"94107\",\n      seq: 1,\n      tz: \"America/Los_Angeles\"\n    }\n  ],\n  items: NumberLong(11),\n  proofOfDelivery: null\n}",
+    "tree": {
+      "key": "(5) { _id: 6735a1f3c2e4b81a9d0f3e40 }",
+      "typeName": "Document",
+      "value": "{ 12 fields }",
+      "children": [
+        {
+          "key": "_id",
+          "typeName": "ObjectId",
+          "value": "6735a1f3c2e4b81a9d0f3e40"
+        },
+        {
+          "key": "orderNo",
+          "typeName": "String",
+          "value": "ORD-2026-118433"
+        },
+        {
+          "key": "tenantId",
+          "typeName": "String",
+          "value": "bayfreight"
+        },
+        {
+          "key": "status",
+          "typeName": "String",
+          "value": "out_for_delivery"
+        },
+        {
+          "key": "eta",
+          "typeName": "Date",
+          "value": "2026-11-19T16:05:00Z"
+        },
+        {
+          "key": "attempts",
+          "typeName": "Int32",
+          "value": "1"
+        },
+        {
+          "key": "codAmount",
+          "typeName": "Double",
+          "value": "0.0"
+        },
+        {
+          "key": "signatureRequired",
+          "typeName": "Boolean",
+          "value": "false"
+        },
+        {
+          "key": "driver",
+          "typeName": "Object",
+          "value": "{ 3 fields }",
+          "children": [
+            {
+              "key": "id",
+              "typeName": "String",
+              "value": "drv_7781"
+            },
+            {
+              "key": "vehicle",
+              "typeName": "String",
+              "value": "box-truck"
+            },
+            {
+              "key": "phoneVerified",
+              "typeName": "Boolean",
+              "value": "true"
+            }
+          ]
+        },
+        {
+          "key": "stops",
+          "typeName": "Array",
+          "value": "[ 1 element ]",
+          "children": [
+            {
+              "key": "[0]",
+              "typeName": "Object",
+              "value": "{ 3 fields }",
+              "children": [
+                {
+                  "key": "zip",
+                  "typeName": "String",
+                  "value": "94107"
+                },
+                {
+                  "key": "seq",
+                  "typeName": "Int32",
+                  "value": "1"
+                },
+                {
+                  "key": "tz",
+                  "typeName": "String",
+                  "value": "America/Los_Angeles"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "items",
+          "typeName": "Int64",
+          "value": "11"
+        },
+        {
+          "key": "proofOfDelivery",
+          "typeName": "Null",
+          "value": "null"
+        }
+      ]
+    }
+  }
+]

@@ -46,7 +46,10 @@ fn friendly_mongo(e: &mongodb::error::Error) -> String {
                 "connection refused — is the server running and is the host/port right?"
             } else if lower.contains("timed out") || lower.contains("timeout") {
                 "timed out — check your network/VPN and the cluster's IP access list"
-            } else if lower.contains("dns") || lower.contains("resolve") || lower.contains("no record") {
+            } else if lower.contains("dns")
+                || lower.contains("resolve")
+                || lower.contains("no record")
+            {
                 "the host name could not be resolved (DNS)"
             } else if lower.contains("tls") || lower.contains("certificate") {
                 "the TLS handshake failed — check the tls/ssl options"
