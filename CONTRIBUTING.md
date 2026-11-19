@@ -29,6 +29,6 @@ CI runs the same checks (with a real `mongo:8` container) on every pull request.
 - Keep PRs focused; add or update tests for behaviour changes.
 
 ## 🚀 Releasing (maintainers)
-1. Bump the version in `package.json`, `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json`, and add a `CHANGELOG.md` entry.
-2. `git tag vX.Y.Z && git push origin vX.Y.Z`
-3. The **Release** workflow builds the universal `.dmg` and publishes it on the Releases page.
+1. Add a `CHANGELOG.md` entry for the new version.
+2. Bump the version in `package.json`, `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json`, and merge to `main`.
+3. The **Release** workflow notices the new version, creates the `vX.Y.Z` tag, builds the universal `.dmg` and publishes the release (with notes from the changelog). Pushing a `vX.Y.Z` tag yourself works too.

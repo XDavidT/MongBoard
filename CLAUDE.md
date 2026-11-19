@@ -17,3 +17,6 @@ npm run build                       # tsc + vite
 cd src-tauri && cargo test          # unit tests
 MONGODB_URI=… cargo test -- --include-ignored   # CRUD integration (CI runs this with a mongo:8 service)
 ```
+
+## Releasing
+Add a CHANGELOG entry, then bump the version in `package.json`, `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json` on `main`. `release.yml` creates tag `vX.Y.Z` and publishes the `.dmg` automatically (it skips versions that already have a release).
